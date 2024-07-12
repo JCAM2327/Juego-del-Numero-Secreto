@@ -73,18 +73,3 @@ function reiniciarJuego() {
 
 }
 condicionesIniciales();
-
-
-
-listaCompras.push("Manzana");
-listaCompras.push("Arroz");
-listaCompras.push("Leche");
-listaCompras.push("Pan");
-listaCompras.push("Carne");
-listaCompras.push("Miel");
-
-console.log(listaCompras);
-console.log(listaCompras.length);
-console.log(listaCompras[0]);
-console.log(listaCompras[listaCompras.length-1]);
-*/
