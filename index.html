@@ -1,37 +1,125 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@700&family=Inter:wght@400;700&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
-    <title>JS Game</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Juego del número secreto | José Carlos Alayo</title>
+  <meta name="description" content="Adivina el número secreto entre 1 y 10. Un juego interactivo con pistas, historial de intentos y récord personal." />
+  <meta name="author" content="José Carlos Alayo Mondragón" />
+  <meta name="theme-color" content="#07111f" />
+  <link rel="canonical" href="https://jcam2327.github.io/Juego-del-Numero-Secreto/" />
+  <meta property="og:title" content="Juego del número secreto" />
+  <meta property="og:description" content="Adivina el número secreto entre 1 y 10. Pistas, historial de intentos y récord personal." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jcam2327.github.io/Juego-del-Numero-Secreto/" />
+  <meta property="og:locale" content="es_ES" />
+  <meta name="twitter:card" content="summary" />
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
+  <div class="ambient ambient--one" aria-hidden="true"></div>
+  <div class="ambient ambient--two" aria-hidden="true"></div>
+  <div class="grid-overlay" aria-hidden="true"></div>
 
-    <div class="container">
-        <div class="container__contenido">
-            <div class="container__informaciones">
-                <div class="container__texto">
-                    <h1></h1>
-                    <p class="texto__parrafo"></p>
-                </div>
-                <input type="number" id="valorUsuario" min="1" max="10" class="container__input">
-                <div class="chute container__botones">
-                    <button onclick="verificarIntento();" class="container__boton">Intentar</button>
-                    <button onclick = "reiniciarJuego();" class ="container__boton" id="reiniciar" disabled>Nuevo juego</button>
-                </div>
-            </div>
-            <img src="./img/ia.png" alt="Una persona mirando a la izquierda" class="container__imagen-persona" />
+  <main class="shell">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="Juego del número secreto">
+        <span class="brand__mark" aria-hidden="true">?</span>
+        <span>Número secreto</span>
+      </a>
+      <span class="topbar__tag">Alura Latam · Challenge</span>
+    </header>
+
+    <section class="hero">
+      <div class="hero__copy">
+        <p class="eyebrow"><span aria-hidden="true"></span> Juego interactivo</p>
+        <h1>Adivina el <span>número secreto.</span></h1>
+        <p class="lede">
+          Piensa, prueba y usa las pistas. El sistema elige un número del 1 al 10
+          y tú tienes que encontrarlo en la menor cantidad de intentos.
+        </p>
+
+        <div class="stats" aria-label="Resumen de la partida">
+          <div class="stat">
+            <span>Rango</span>
+            <strong>1 — 10</strong>
+          </div>
+          <div class="stat">
+            <span>Intentos</span>
+            <strong id="intentos">0</strong>
+          </div>
+          <div class="stat">
+            <span>Mejor marca</span>
+            <strong id="mejorMarca">—</strong>
+          </div>
         </div>
-    </div>
 
-    <script src="app.js"></script>
+        <ul class="hints">
+          <li><span aria-hidden="true">01</span> Ingresa un número entero.</li>
+          <li><span aria-hidden="true">02</span> Recibe pistas de mayor o menor.</li>
+          <li><span aria-hidden="true">03</span> Cada ronda usa un número distinto.</li>
+        </ul>
+      </div>
+
+      <div class="game" id="game" role="group" aria-labelledby="game-title">
+        <div class="game__top">
+          <div>
+            <p class="game__label">Ronda actual</p>
+            <h2 id="game-title">¿Cuál será?</h2>
+          </div>
+          <span class="game__status" id="estadoRonda">En juego</span>
+        </div>
+
+        <div class="game__display">
+          <p id="mensaje" class="game__message" role="status" aria-live="polite" aria-atomic="true">
+            Elige un número del 1 al 10.
+          </p>
+          <ul class="attempts" id="historial" aria-label="Intentos de esta ronda"></ul>
+        </div>
+
+        <form class="game__form" id="formulario" novalidate>
+          <label for="valorUsuario">Tu intento</label>
+          <div class="game__input-row">
+            <input
+              type="number"
+              id="valorUsuario"
+              name="intento"
+              min="1"
+              max="10"
+              step="1"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="Ej. 7"
+              aria-describedby="ayuda"
+            />
+            <button type="submit" class="button button--primary" id="botonIntentar">
+              Probar número
+            </button>
+          </div>
+          <p class="game__help" id="ayuda">Solo números enteros entre 1 y 10.</p>
+        </form>
+
+        <div class="game__footer">
+          <p id="rondaInfo">Números sorteados: 0 de 10</p>
+          <button type="button" class="button button--ghost" id="botonReiniciar" disabled>
+            Nuevo juego
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>Hecho con HTML, CSS y JavaScript.</p>
+      <a href="https://github.com/JCAM2327/Juego-del-Numero-Secreto" target="_blank" rel="noopener noreferrer">
+        Ver repositorio <span aria-hidden="true">↗</span>
+      </a>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
 </body>
-
 </html>
